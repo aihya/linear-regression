@@ -21,7 +21,7 @@ R4  14 24 34 44
 
 class LinearRegression():
   def __init__(self, data: tuple = None):
-    if data == None:
+	if data == None:
 			self.weights = None
 			self.weightsSize = 0
 		else:
@@ -29,13 +29,13 @@ class LinearRegression():
 			self.weightsSize = data.shape[1]
 
   def mean(self, ):
-    pass
+	pass
 
   def cost():
-    pass
+	pass
 
   def train():
-    pass
+	pass
 
   def predict():
-    pass
+	pass
