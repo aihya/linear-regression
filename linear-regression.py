@@ -23,7 +23,7 @@ class LinearRegression():
   def __init__(self, data: tuple = None):
     if data == None:
 			self.weights = None
-      self.weightsSize = 0
+			self.weightsSize = 0
 		else:
 			self.weights = data[0]
 			self.weightsSize = data.shape[1]
