@@ -1,4 +1,4 @@
-import numpy
+import numpy as np
 
 """
 hypotesis:
@@ -20,27 +20,25 @@ R4  14 24 34 44
 
 
 class LinearRegression():
-    def __init__(self, data: tuple = None) -> tuple:
-		"""
-		data: tuple of X and y => (X, y)
-		X: n*m matrix
-		y: n*1 matrix (vector)
-		"""
-        if data == None:
-            self.weights = None
-            self.weightsSize = 0
-        else:
-            self.weights = data[0]
-            self.weightsSize = data.shape[1]
+    def __init__(self, data=None, scaling=False, normalization=False):
+        self.weights = list()
+        self.weights_size = data.shape[1] if data else 0
+        self.X = data[0] if data else None
+        self.y = data[1] if data else None
+        self.data_scaling(X, scaling, normalization)
 
-    def mean(self):
-        pass
-
-    def cost(self):
-        pass
-
-    def train(self):
-        pass
-
-    def predict(self):
-        pass
+    def data_scaling(X, scaling, normalization):
+        if normalization:
+            for col_i in range(X.shape[1]):
+                col = X[:, col_i]
+                col_mean = np.mean(col)
+                col_range = max(col) - min(col)
+                for row_i, row in enumerate(X):
+                    X[row_i][col_i] = (
+                        (X[row_i][col_i] - col_mean) / col_range) * 1.0
+        elif scaling:
+            for col_i in range(X.shape[1]):
+                col = X[:, col_i]
+                col_range = max(col) - min(col)
+                for row_i, row in enumerate(X):
+                    X[row_i][col_i] = (X[row_i][col_i] / col_range) * 1.0
