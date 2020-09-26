@@ -20,7 +20,12 @@ R4  14 24 34 44
 
 
 class LinearRegression():
-    def __init__(self, data=None):
+    def __init__(self, data: tuple = None) -> tuple:
+		"""
+		data: tuple of X and y => (X, y)
+		X: n*m matrix
+		y: n*1 matrix (vector)
+		"""
         if data == None:
             self.weights = None
             self.weightsSize = 0
