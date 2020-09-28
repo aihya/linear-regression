@@ -11,15 +11,12 @@
 # **************************************************************************** #
 
 import numpy as np
-import math
 
 
 class LinearRegression():
-    def __init__(self, data=None, scaling=False, normalization=False):
-        self.weights = None
-        self.X = np.array(data[0], dtype=float) if data else None
-        self.y = np.array(data[1], dtype=float) if data else None
-        self.data_scaling(self.X, scaling, normalization)
+    def __init__(self, scaling=False, normalization=False):
+        self._scaling = scaling
+        self._normalization = normalization
 
     def data_scaling(self, X, scaling, normalization):
         if normalization:
@@ -27,32 +24,48 @@ class LinearRegression():
                 col = X[:, col_i]
                 col_mean = np.mean(col)
                 col_range = max(col) - min(col)
-                for row_i, row in enumerate(X):
+                for row_i, _ in enumerate(X):
                     X[row_i][col_i] = (X[row_i][col_i] - col_mean) / col_range
         elif scaling:
             for col_i in range(X.shape[1]):
                 col = X[:, col_i]
                 col_range = max(col) - min(col)
-                for row_i, row in enumerate(X):
+                for row_i, _ in enumerate(X):
                     X[row_i][col_i] = X[row_i][col_i] / col_range
 
-    def random_weights(self, X):
-        return np.empty([1, X.shape[1]], dtype=float)
+    def random_weights(self, size):
+        return np.random.rand(size, 1) * np.random.rand(1) * 100
 
     def hypothesis(self, X, weights):
-        _X = np.append(X.T, np.ones([1, weights.length])).T
-        return np.matmul(_X, weights, dtype=float)
+        return np.matmul(X, weights, dtype=float)
 
-    def cost(self, X, y, weights, length):
+    def cost(self, X, y, weights):
+        m = y.shape[0]
         _hypothesis = self.hypothesis(X, weights)
         _sum = 0
-        for i in range(length):
-            _sum = _sum + math.pow(_hypothesis[i] + y[i], 2)
-        return 1/(2*length) * _sum
+        for i in range(m):
+            _sum = _sum + np.math.pow(_hypothesis[i][0] + y[i][0], 2)
+        return 1/(2*m) * _sum
 
-    # to-do
-    def gradient_descent(self, X, y, weights, alpha):
-        pass
+    def derivative(self, X, y, weights, index):
+        m = y.shape[0]
+        _hypothesis = self.hypothesis(X, weights)
+        _sum = 0
+        for i in range(m):
+            _sum = _sum + (_hypothesis[i][0] + y[i][0]) * X[i][index]
+        return 1/m * _sum
 
-    def train(self, learning_rate=0.1):
-        pass
+    def gradient_descent(self, X, y, weights, alpha, iterations):
+        for _ in range(iterations):
+            print("Iteration {} | Cost {}".format(_, self.cost(X, y, weights)))
+            weights_copy = np.copy(weights)
+            for i, _ in enumerate(weights):
+                cost_derivative = self.derivative(X, y, weights_copy, i)
+                weights[i][0] = weights[i][0] - alpha*cost_derivative
+        return weights
+
+    def train(self, X, y, lr=0.1, iters=10):
+        X = np.append(np.ones([X.shape[0], 1], dtype=float), X, axis=1)
+        _weights = self.random_weights(X.shape[1])
+        weights = self.gradient_descent(X, y, _weights, lr, iters)
+        return weights
