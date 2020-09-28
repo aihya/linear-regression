@@ -17,6 +17,7 @@ class LinearRegression():
     def __init__(self, scaling=False, normalization=False):
         self._scaling = scaling
         self._normalization = normalization
+        self._coefs = None
 
     def data_scaling(self, X, scaling, normalization):
         if normalization:
@@ -62,8 +63,7 @@ class LinearRegression():
             for i, _ in enumerate(weights):
                 cost_derivative = self.derivative(X, y, weights_copy, i)
                 weights[i][0] = weights[i][0] - alpha*cost_derivative
-        print("Iteration {} | Cost {}".format(
-            _ + 1, self.cost(X, y, weights)))
+        print("Cost {}".format(self.cost(X, y, weights)))
         return weights
 
     def fit(self, X, y, lr=0.1, iters=10):
@@ -72,4 +72,9 @@ class LinearRegression():
         y = y.reshape([y.shape[0], 1])
         _weights = self.random_weights(X.shape[1])
         weights = self.gradient_descent(X, y, _weights, lr, iters)
-        return weights.reshape([1, weights.shape[0]])
+        self._coefs = weights.reshape([1, weights.shape[0]])
+
+    def predict(self, X):
+        X = np.append(np.ones([X.shape[0], 1], dtype=float), X, axis=1)
+        coefs = self._coefs.reshape([self._coefs.shape[1], 1])
+        return np.matmul(X, coefs).reshape([1, X.shape[0]])
