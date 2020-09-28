@@ -32,6 +32,7 @@ class LinearRegression():
                 col_range = max(col) - min(col)
                 for row_i, _ in enumerate(X):
                     X[row_i][col_i] = X[row_i][col_i] / col_range
+        return X
 
     def random_weights(self, size):
         return np.random.rand(size, 1) * np.random.rand(1) * 100
@@ -44,7 +45,7 @@ class LinearRegression():
         _hypothesis = self.hypothesis(X, weights)
         _sum = 0
         for i in range(m):
-            _sum = _sum + np.math.pow(_hypothesis[i][0] + y[i][0], 2)
+            _sum = _sum + np.math.pow(_hypothesis[i][0] - y[i][0], 2)
         return 1/(2*m) * _sum
 
     def derivative(self, X, y, weights, index):
@@ -52,20 +53,23 @@ class LinearRegression():
         _hypothesis = self.hypothesis(X, weights)
         _sum = 0
         for i in range(m):
-            _sum = _sum + (_hypothesis[i][0] + y[i][0]) * X[i][index]
+            _sum = _sum + (_hypothesis[i][0] - y[i][0]) * X[i][index]
         return 1/m * _sum
 
     def gradient_descent(self, X, y, weights, alpha, iterations):
         for _ in range(iterations):
-            print("Iteration {} | Cost {}".format(_, self.cost(X, y, weights)))
             weights_copy = np.copy(weights)
             for i, _ in enumerate(weights):
                 cost_derivative = self.derivative(X, y, weights_copy, i)
                 weights[i][0] = weights[i][0] - alpha*cost_derivative
+        print("Iteration {} | Cost {}".format(
+            _ + 1, self.cost(X, y, weights)))
         return weights
 
     def train(self, X, y, lr=0.1, iters=10):
+        X = self.data_scaling(X, self._scaling, self._normalization)
         X = np.append(np.ones([X.shape[0], 1], dtype=float), X, axis=1)
+        y = y.reshape([y.shape[0], 1])
         _weights = self.random_weights(X.shape[1])
         weights = self.gradient_descent(X, y, _weights, lr, iters)
-        return weights
+        return weights.reshape([1, weights.shape[0]])
