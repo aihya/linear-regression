@@ -66,7 +66,7 @@ class LinearRegression():
             _ + 1, self.cost(X, y, weights)))
         return weights
 
-    def train(self, X, y, lr=0.1, iters=10):
+    def fit(self, X, y, lr=0.1, iters=10):
         X = self.data_scaling(X, self._scaling, self._normalization)
         X = np.append(np.ones([X.shape[0], 1], dtype=float), X, axis=1)
         y = y.reshape([y.shape[0], 1])
