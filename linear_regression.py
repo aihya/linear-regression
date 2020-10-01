@@ -74,9 +74,9 @@ class LinearRegression():
 
 	def fit(self, X, y, lr=0.1, iters=10):
 		X = self.data_scaling(X, self.normalize)
+		y = y.reshape([y.shape[0], 1])
 		if (X.shape[0] >= 1000 or X.shape[1] >= 1000):
 			X = np.append(np.ones([X.shape[0], 1], dtype=float), X, axis=1)
-			y = y.reshape([y.shape[0], 1])
 			_weights = self.random_weights(X.shape[1])
 			weights = self.gradient_descent(X, y, _weights, lr, iters)
 		else:
