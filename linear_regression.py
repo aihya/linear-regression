@@ -82,7 +82,6 @@ class LinearRegression():
 		else:
 			if self.fit_intercept:
 				X = np.append(np.ones([X.shape[0], 1], dtype=float), X, axis=1)
-			y = y.reshape([y.shape[0], 1])
 			weights = self.normal_equation(X, y)
 			if self.fit_intercept:
 				self.intercept = weights[0]
