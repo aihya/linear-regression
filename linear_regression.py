@@ -56,16 +56,12 @@ class LinearRegression():
 		for _ in range(iters):
 			if self.verbose:
 				print("Iteration: {}, Cost {}\r".format(_+1, self.cost(X, y, weights)), end='')
-			weights_copy = np.copy(weights)
-			for i, _ in enumerate(weights):
-				cost_derivative = self.derivative(X, y, weights_copy, i)
-				weights[i][0] = weights[i][0] - alpha*cost_derivative
+			_diff = self.hypothesis(X, weights)
+			weights = weights - (alpha/m) * np.matmul(X.T, _diff, dtype=float) 
 		if self.verbose:
 			print()
 		return weights
 		
-			
-
 	def normal_equation(self, X, y):
 		centered = np.matmul(X.T, X)
 		inversed = np.linalg.pinv(centered)
